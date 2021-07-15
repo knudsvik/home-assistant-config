@@ -1,0 +1,118 @@
+- platform: generic_thermostat
+  name: Bad
+  heater: switch.zwater_bad
+  target_sensor: sensor.bathroom_temperature_calc
+  min_temp: 15
+  max_temp: 30
+  min_cycle_duration:
+    minutes: 20
+  cold_tolerance: 0
+  hot_tolerance: 0
+  away_temp: 15
+- platform: generic_thermostat
+  name: Gang
+  heater: switch.zwater_gang
+  target_sensor: sensor.gang_temperatur_calc
+  min_temp: 15
+  max_temp: 30
+  min_cycle_duration:
+    minutes: 20
+  cold_tolerance: 0
+  hot_tolerance: 0
+  away_temp: 15
+- platform: generic_thermostat
+  name: Kjøkken
+  heater: switch.zwater_kjokken
+  target_sensor: sensor.kjokken_temperatur_calc
+  min_temp: 15
+  max_temp: 30
+  min_cycle_duration:
+    minutes: 20
+  cold_tolerance: 0
+  hot_tolerance: 0
+  away_temp: 15
+- platform: generic_thermostat
+  name: Master Bedroom
+  heater: switch.zwater_master
+  target_sensor: sensor.master_temperature_calc
+  min_temp: 15
+  max_temp: 30
+  min_cycle_duration:
+    minutes: 20
+  cold_tolerance: 0
+  hot_tolerance: 0
+  away_temp: 15
+- platform: generic_thermostat
+  name: Pia
+  heater: switch.zwater_pia
+  target_sensor: sensor.pia_temperature_calc
+  min_temp: 15
+  max_temp: 30
+  min_cycle_duration:
+    minutes: 20
+  cold_tolerance: 0
+  hot_tolerance: 0
+  away_temp: 15
+- platform: generic_thermostat
+  name: Stue
+  heater: switch.zwater_stue
+  target_sensor: sensor.stue_temperatur_calc
+  min_temp: 15
+  max_temp: 30
+  min_cycle_duration:
+    minutes: 20
+  cold_tolerance: 0
+  hot_tolerance: 0
+  away_temp: 15
+- platform: generic_thermostat
+  name: Sverre
+  heater: switch.zwater_sverre
+  target_sensor: sensor.sverre_temperatur_xiaomi
+  min_temp: 15
+  max_temp: 30
+  min_cycle_duration:
+    minutes: 20
+  cold_tolerance: 0
+  hot_tolerance: 0
+  away_temp: 15
+- platform: generic_thermostat
+  name: TV stue
+  heater: switch.zwater_tv_stue
+  target_sensor: sensor.tv_stue_temperatur_calc
+  min_temp: 15
+  max_temp: 30
+  min_cycle_duration:
+    minutes: 20
+  cold_tolerance: 0
+  hot_tolerance: 0
+  away_temp: 15
+
+
+#############
+# LEILIGHET #
+#############
+
+- platform: generic_thermostat
+  name: Leilighet bad
+  unique_id: apartment_bathroom_thermostat
+  heater: switch.zwater_apartment_bathroom
+  target_sensor: sensor.apartment_bathroom_temperature
+  min_temp: 15
+  max_temp: 30
+  min_cycle_duration:
+    minutes: 20
+  cold_tolerance: 0
+  hot_tolerance: 0
+  away_temp: 15
+- platform: generic_thermostat
+  name: Leilighet stue kjøkken
+  unique_id: apartment_living_room_thermostat
+  heater: switch.zwater_apartment_living_room
+  target_sensor: sensor.apartment_kitchen_temperature
+  min_temp: 15
+  max_temp: 30
+  min_cycle_duration:
+    minutes: 20
+  cold_tolerance: 0
+  hot_tolerance: 0
+  away_temp: 15
