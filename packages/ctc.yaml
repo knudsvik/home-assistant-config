@@ -262,14 +262,14 @@ modbus:
         address: 62107
         scan_interval: 300
         unique_id: 59e56c4d-3b43-4386-896f-116199a95f39
-        unit_of_measurement: %
+        unit_of_measurement: '%'
         scale: .1
       - name: CTC Heat Pump Brine Pump
         slave: 1
         address: 62117
         scan_interval: 300
         unique_id: 95e5a764-b963-4b00-bd9a-ac37f46756f3
-        unit_of_measurement: %
+        unit_of_measurement: '%'
         scale: .1
       - name: CTC Heat Pump Fan
         slave: 1
@@ -321,7 +321,7 @@ modbus:
         device_class: current
         unit_of_measurement: A
         scale: 1
-        precision: .1
+        precision: 1
       - name: CTC Current L3
         slave: 1
         address: 62173
