@@ -1,18 +1,18 @@
 homeassistant:
   customize: !include customize.yaml
+  packages: !include_dir_named packages
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
 frontend:
   themes: !include_dir_merge_named themes
 
-# Text to speech
 tts:
   - platform: google_translate
 
+alarm_control_panel: !include alarm.yaml
 automation: !include automations.yaml
 binary_sensor: !include binary_sensors.yaml
-#camera: !include cameras.yaml
 climate: !include climate.yaml
 group: !include groups.yaml
 homekit: !include homekit.yaml
@@ -20,15 +20,13 @@ influxdb: !include influx.yaml
 input_boolean: !include input_boolean.yaml
 input_datetime: !include input_datetime.yaml
 input_number: !include input_numbers.yaml
-ios: !include ios.yaml
-light: !include lights.yaml
 modbus: !include modbus.yaml
+mqtt: !include mqtt.yaml
 plant: !include plants.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 sensor: !include sensors.yaml
-#switch: !include switches.yaml
-utility_meter: !include utility_meters.yaml
+template: !include templates.yaml
     
 ####################
 ### INTEGRATIONS ###
@@ -41,11 +39,10 @@ media_player:
 
 stream:
 
-mqtt_statestream:
-  base_topic: homeassistant
-  publish_attributes: true
-  publish_timestamps: true
-  include:
-    entities:
-      - sensor.apartment_bathroom_temperature
-      - sensor.apartment_kitchen_temperature
+calendar:
+  - platform: caldav
+    url: https://caldav.icloud.com
+    username: !secret cal_user
+    password: !secret cal_pass
+    calendars:
+     - Family

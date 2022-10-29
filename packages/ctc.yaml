@@ -1,0 +1,437 @@
+
+# Home Assistant package for CTC boiler and heat pump #
+
+##################
+# MODBUS SENSORS #
+##################
+
+modbus:
+  - type: tcp
+    name: ctc
+    host: !secret ctc_ip
+    port: 502
+    sensors: ## Ordered by modbus address
+      - name: CTC Hotwater Mode
+        slave: 1
+        address: 61500
+        scan_interval: 300
+        unique_id: 3c4474d4-6ac9-432a-bb15-3d98cdc27ebe
+        # Translated with template sensor:
+        # 0=economy 1=normal 2=comfort 3=customized
+      - name: CTC Extra Hotwater Timer
+        slave: 1
+        address: 61503
+        scan_interval: 300
+        unique_id: 576d65cc-e790-4698-8cdd-7b30289bfde9
+        device_class: duration
+        unit_of_measurement: hours
+        scale: .5
+        precision: 1
+      - name: CTC HP Blocked
+        slave: 1
+        address: 61521
+        scan_interval: 300
+        unique_id: 53708adc-ab04-4202-b595-dca56af63ad4
+        # Translated with template sensor:
+        # 0=blocked, 1=allowed
+      - name: CTC Primary Flow Temperature Max
+        slave: 1
+        address: 61534
+        scan_interval: 3600
+        unique_id: 6d04d4cd-3892-47a7-88a5-18fa41399092
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1
+      - name: CTC Primary Flow Temperature Min
+        slave: 1
+        address: 61538
+        scan_interval: 3600
+        unique_id: 4b914185-32c3-4359-861d-e119ad8a1c6c
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1
+      - name: CTC Heating System mode  
+        slave: 1
+        address: 61542
+        scan_interval: 300
+        unique_id: 3ffc4441-d8b0-45dc-9a8e-6ef4506e7bf6
+        # Translated to auto/on/off with template sensor
+        # 0=auto 1=on 2=off
+      - name: CTC Heat Pump RPS Max  ### DOES NOT GIVE REASONABLE RESULT ###
+        slave: 1
+        address: 61572
+        scan_interval: 30
+        unique_id: 25dbdb2c-fdbf-47a1-8b93-a6bbeff5e945
+        unit_of_measurement: rps
+        scale: .1
+      - name: CTC Boiler Mixing Valve Opening Temperature Setpoint
+        slave: 1
+        address: 61585
+        scan_interval: 300
+        unique_id: 40709bcd-d9f2-4598-9691-afec88e75c22
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+      - name: CTC Boiler Upper Power Max
+        slave: 1
+        address: 61590
+        scan_interval: 3600
+        unique_id: f34bcdf9-96ec-4f82-8010-6cf374f3c096
+        device_class: power
+        unit_of_measurement: kW
+        scale: .1
+        precision: 1
+      - name: CTC Boiler Lower Power Max
+        slave: 1
+        address: 61591
+        scan_interval: 3600
+        unique_id: 85901d50-9160-486f-ae2c-909b9d4da4a8
+        device_class: power
+        unit_of_measurement: kW
+        scale: .1
+        precision: 1
+      - name: CTC Boiler Lower Temperature Setpoint
+        slave: 1
+        address: 61633
+        scan_interval: 30
+        unique_id: b1e46e82-4f40-4980-bc5e-89e7ccc8154a
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1
+      - name: CTC Boiler Upper Temperature Setpoint
+        slave: 1
+        address: 61634
+        scan_interval: 30
+        unique_id: 901e0958-c69d-4909-9218-cb040a6bd3cc
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1
+      - name: CTC Boiler Add Heat Temperature
+        slave: 1
+        address: 61635
+        scan_interval: 300
+        unique_id: e3792fd2-54f9-476b-ac79-469e28a85fb8
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+      - name: CTC Boiler Extra Hotwater Temperature
+        slave: 1
+        address: 61636
+        scan_interval: 300
+        unique_id: 8f5b2db9-93a2-4553-860d-616523f86063
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+      - name: CTC Outdoor Temperature
+        slave: 1
+        address: 62000
+        scan_interval: 300
+        unique_id: c466c124-283f-4e85-8835-b58a082ccf4a
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+      - name: CTC Hotwater Temperature  ### DOES NOT GIVE REASONABLE RESULT ###
+        slave: 1
+        address: 62003
+        scan_interval: 300
+        unique_id: 3c327d6a-cc10-4f07-8047-31aa790aad7c
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1
+      - name: CTC Status
+        slave: 1
+        address: 62005
+        scan_interval: 300
+        unique_id: e9bf6572-9492-4640-95bc-227d5a015d81
+      - name: CTC Primary Flow Temperature Setpoint
+        slave: 1
+        address: 62007
+        scan_interval: 300
+        unique_id: b25ef358-72d9-4ceb-8e5d-eedc2c4170ac
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1
+      - name: CTC Primary Flow Temperature
+        slave: 1
+        address: 62011
+        scan_interval: 30
+        unique_id: 86c0abf3-9a38-4fd2-a60a-4fe9419658ad
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1 
+      - name: CTC Return Flow Temperature
+        slave: 1
+        address: 62015
+        scan_interval: 30
+        unique_id: 85c864e4-0995-49aa-8d7c-93753132f34c
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1 
+      - name: CTC Heat Pump Status
+        slave: 1
+        address: 62017
+        scan_interval: 30
+        unique_id: 5e53fd23-65d8-4192-ad6d-7cea1a2ca2ad
+      - name: CTC Heat Pump Flow Temperature
+        slave: 1
+        address: 62027
+        scan_interval: 30
+        unique_id: fdbea6ad-8e06-4e04-9fcc-70ad614908c2
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1 
+      - name: CTC Heat Pump Return Temperature
+        slave: 1
+        address: 62037
+        scan_interval: 30
+        unique_id: a6f4a59a-71eb-4857-a99b-eada3b1ef3e0
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1 
+      - name: CTC Heat Pump Discharge Temperature
+        slave: 1
+        address: 62047
+        scan_interval: 30
+        unique_id: 6bd42ece-8c37-49f4-9170-11e497ff033b
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1 
+      - name: CTC Heat Pump Suction Gas Temperature
+        slave: 1
+        address: 62057
+        scan_interval: 30
+        unique_id: a8f25153-a73d-4e94-ac53-567c97cb0b94
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1 
+      - name: CTC Heat Pump High Pressure
+        slave: 1
+        address: 62067
+        scan_interval: 30
+        unique_id: 6ed43603-8270-4407-9a51-dcbd58d4eff6
+        device_class: pressure
+        scale: .1
+      - name: CTC Heat Pump High Pressure
+        slave: 1
+        address: 62067
+        scan_interval: 30
+        unique_id: 7c25f6eb-ab6a-46c8-bfff-5b92f8564c83
+        device_class: pressure
+        scale: .1
+      - name: CTC Heat Pump Low Pressure
+        slave: 1
+        address: 62077
+        scan_interval: 30
+        unique_id: bf09b091-78bc-4552-ac94-50a10f762cff
+        device_class: pressure
+      - name: CTC Heat Pump Brine Temperature In
+        slave: 1
+        address: 62087
+        scan_interval: 30
+        unique_id: 0c6c6fa9-6acb-4713-9deb-f73ac7c126d8
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1 
+      - name: CTC Heat Pump Brine Temperature Out
+        slave: 1
+        address: 62097
+        scan_interval: 30
+        unique_id: c2981369-22fd-4880-bb4f-b0444019ded1
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1 
+      - name: CTC Heat Pump Charge Pump
+        slave: 1
+        address: 62107
+        scan_interval: 300
+        unique_id: 59e56c4d-3b43-4386-896f-116199a95f39
+      - name: CTC Heat Pump Brine Pump
+        slave: 1
+        address: 62117
+        scan_interval: 300
+        unique_id: 95e5a764-b963-4b00-bd9a-ac37f46756f3
+      - name: CTC Heat Pump Fan
+        slave: 1
+        address: 62127
+        scan_interval: 300
+        unique_id: de752d9a-c6d2-4ef6-9145-325e793c43e8
+      - name: CTC Heat Pump Outdoor Temperature
+        slave: 1
+        address: 62147
+        scan_interval: 30
+        unique_id: fe95a468-17f5-4559-bdab-87baa500e01b
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: .1
+        precision: 1 
+      - name: CTC Immersion Heater Power
+        slave: 1
+        address: 62168
+        scan_interval: 30
+        unique_id: b67b214e-28ce-41ba-80b1-6580d3197609
+        device_class: power
+        unit_of_measurement: kW
+        scale: .1
+        precision: 1
+      - name: CTC Immersion Heater Power Lower
+        slave: 1
+        address: 62169
+        scan_interval: 30
+        unique_id: 0ff00975-5cf8-4b1f-a647-607744c376f6
+        device_class: power
+        unit_of_measurement: kW
+        scale: .1
+        precision: 1
+      - name: CTC Current L1
+        slave: 1
+        address: 62171
+        scan_interval: 30
+        unique_id: b57da456-1fbb-4ad5-b714-bf1ecd850d46
+        device_class: current
+        unit_of_measurement: A
+        scale: .1
+        precision: 1
+      - name: CTC Current L2
+        slave: 1
+        address: 62172
+        scan_interval: 30
+        unique_id: ec4793a6-8166-43df-98a8-5d0897c282f7
+        device_class: current
+        unit_of_measurement: A
+        scale: .1
+        precision: .1
+      - name: CTC Current L3
+        slave: 1
+        address: 62173
+        scan_interval: 30
+        unique_id: db0dc58c-9bf0-49ab-a4d3-d9d9ac403c91
+        device_class: current
+        unit_of_measurement: A
+        scale: .1
+        precision: 1 
+      - name: CTC Immersion Heater Energy
+        slave: 1
+        address: 62191
+        scan_interval: 30
+        unique_id: bb6f5fc8-00f1-4746-ac4d-df0b4d0020a9
+        device_class: energy
+        unit_of_measurement: kWh
+        precision: 1
+      - name: CTC Heat Pump Current RPS
+        slave: 1
+        address: 62193
+        scan_interval: 30
+        unique_id: ce61229c-e260-4125-844e-9b896b0a2ab3
+        unit_of_measurement: rps
+        scale: .1
+      - name: CTC Heating System Status
+        slave: 1
+        address: 62246
+        scan_interval: 300
+        unique_id: 6dac43d6-daed-49ec-881f-f9b506e81a25
+      - name: CTC Boiler Lower Temperature ### DOES NOT GIVE REASONABLE RESULT ###
+        slave: 1
+        address: 62275
+        scan_interval: 30
+        unique_id: a03a355a-488e-40ff-a59f-382999f50576
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: 0.1
+        precision: 1
+      - name: CTC Boiler Upper Temperature
+        slave: 1
+        address: 62276
+        scan_interval: 30
+        unique_id: 40f755be-b4e8-4ec8-87ba-0724f932e496
+        device_class: temperature
+        unit_of_measurement: °C
+        scale: 0.1
+        precision: 1
+
+####################
+# TEMPLATE SENSORS #
+####################
+
+sensor:
+  - platform: template
+    sensors:
+      ctc_heat_pump_status_text:
+        friendly_name: "CTC Heat Pump Status"
+        value_template: >
+          {% set mapper = {
+            '0': 'Compressor Off Start Delay',
+            '1': 'Compressor Off Ready To Start',
+            '2': 'Compressor Wait Until Flow',
+            '3': 'Compressor On Heating',
+            '4': 'Defrost Active',
+            '5': 'Compressor On Cooling',
+            '6': 'Compressor Off Blocked',
+            '7': 'Compressor Off Alarm',
+            '8': 'Function Test',
+            '30': 'HP not defined',
+            '31': 'Compressor not enabled',
+            '32': 'Communication error',
+            '33': 'Charge dhw'} %}
+          {% set state =  states.sensor.ctc_heat_pump_status.state %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+      ctc_heating_system_mode_text:
+        friendly_name: "CTC Heating System Mode"
+        value_template: >
+          {% set mapper = {
+            '0': 'Auto',
+            '1': 'On',
+            '2': 'Off'} %}
+          {% set state =  states.sensor.ctc_heating_system_mode.state %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+      ctc_heating_system_status_text:
+        friendly_name: "CTC Heating System Status"
+        value_template: >
+          {% set mapper = {
+            '0': 'Heating Off',
+            '1': 'Vacation',
+            '2': 'Night Reduction',
+            '3': 'Normal'} %}
+          {% set state =  states.sensor.ctc_heating_system_status.state %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+      ctc_hotwater_mode_text:
+        friendly_name: "CTC Hot Water Mode"
+        value_template: >
+          {% set mapper = {
+            '0': 'Economy',
+            '1': 'Normal',
+            '2': 'Comfort',
+            '3': 'Customised'} %}
+          {% set state =  states.sensor.ctc_hotwater_mode.state %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+      ctc_hp_blocked_text:
+        friendly_name: "CTC HP Blocked"
+        value_template: >
+          {% set mapper = {
+            '0': 'Blocked',
+            '1': 'Allowed'} %}
+          {% set state =  states.sensor.ctc_hp_blocked.state %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
+      ctc_status_text:
+        friendly_name: "CTC Status"
+        value_template: >
+          {% set mapper = {
+            '0': 'Varmepumpe Øvre Tank',
+            '1': 'Varmepumpe Nedre Tank',
+            '2': 'Kun kolbe',
+            '3': 'Varmepumpe og kolbe'} %}
+          {% set state =  states.sensor.ctc_status.state %}
+          {{ mapper[state] if state in mapper else 'Unknown' }}
