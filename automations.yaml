@@ -88,7 +88,7 @@
   description: Øker hastighet på hovedannlegg når leilighet gjør det (for matlaging)
   trigger:
   - platform: state
-    entity_id: sensor.villavent_hybel_speed_level
+    entity_id: sensor.vsr150_speed_level
   condition:
   - condition: not
     conditions:
@@ -99,17 +99,17 @@
   - choose:
     - conditions:
       - condition: numeric_state
-        entity_id: sensor.villavent_hybel_speed_level
+        entity_id: sensor.vsr150_speed_level
         above: '2'
       sequence:
       - service: input_select.select_option
         target:
-          entity_id: input_select.villavent_fan
+          entity_id: input_select.vtr500_fan
         data:
           option: High
     - conditions:
       - condition: numeric_state
-        entity_id: sensor.villavent_hybel_speed_level
+        entity_id: sensor.vsr150_speed_level
         below: '3'
       sequence:
       - delay:
@@ -119,7 +119,7 @@
           milliseconds: 0
       - service: input_select.select_option
         target:
-          entity_id: input_select.villavent_fan
+          entity_id: input_select.vtr500_fan
         data:
           option: Medium
     default: []
@@ -131,9 +131,6 @@
   - platform: time
     at: input_datetime.wakeup_marianne
   condition:
-  - condition: state
-    entity_id: input_boolean.wakeup_marianne
-    state: 'on'
   - condition: not
     conditions:
     - condition: state
@@ -152,60 +149,6 @@
     target:
       entity_id: light.master_marianne
   mode: single
-- id: '1617702704656'
-  alias: Apartment Bathroom Heat 3hrs
-  description: Overstyre vannbåren varme i 3 timer
-  trigger:
-  - platform: state
-    entity_id: sensor.apartment_bathroom_heat_3hrs
-  condition: []
-  action:
-  - choose:
-    - conditions:
-      - condition: state
-        entity_id: sensor.apartment_bathroom_heat_3hrs
-        state: 'on'
-      sequence:
-      - service: switch.turn_on
-        target:
-          entity_id: switch.zwater_apartment_bathroom
-    - conditions:
-      - condition: state
-        entity_id: sensor.apartment_bathroom_heat_3hrs
-        state: 'off'
-      sequence:
-      - service: switch.turn_off
-        target:
-          entity_id: switch.zwater_apartment_bathroom
-    default: []
-  mode: restart
-- id: '1617702854858'
-  alias: Apartment Living Room Heat 3hrs
-  description: Overstyre vannbåren varme i 3 timer kjøkken/stue
-  trigger:
-  - platform: state
-    entity_id: sensor.apartment_living_room_heat_3hrs
-  condition: []
-  action:
-  - choose:
-    - conditions:
-      - condition: state
-        entity_id: sensor.apartment_living_room_heat_3hrs
-        state: 'on'
-      sequence:
-      - service: switch.turn_on
-        target:
-          entity_id: switch.zwater_apartment_living_room
-    - conditions:
-      - condition: state
-        entity_id: sensor.apartment_living_room_heat_3hrs
-        state: 'off'
-      sequence:
-      - service: switch.turn_off
-        target:
-          entity_id: switch.zwater_apartment_living_room
-    default: []
-  mode: restart
 - id: '1617826904712'
   alias: Evening Living Room Lights
   description: Setter på litt lys på kvelden
@@ -228,14 +171,17 @@
       entity_id: input_select.husmodus
       state: Hjemme natt
   action:
+  - service: switch.turn_on
+    target:
+      entity_id: switch.kartell
+  - condition: state
+    entity_id: light.living_room_downlights
+    state: 'off'
   - service: light.turn_on
     target:
       entity_id: light.living_room_downlights
     data:
       brightness_pct: 65
-  - service: switch.turn_on
-    target:
-      entity_id: switch.kartell
   mode: single
 - id: '1618173905682'
   alias: Laundry Motion
@@ -246,16 +192,6 @@
       motion_entity: binary_sensor.laundry_motion
       light_target:
         entity_id: light.laundry_ceiling
-      no_motion_wait: 301
-- id: '1618173978432'
-  alias: Technical Motion
-  description: Skrur på lys ved bevegelse
-  use_blueprint:
-    path: homeassistant/motion_light.yaml
-    input:
-      motion_entity: binary_sensor.technical_motion
-      light_target:
-        entity_id: light.technical_ceiling
       no_motion_wait: 301
 - id: '1618174133440'
   alias: Closet Motion
@@ -276,7 +212,7 @@
     above: '90'
   condition: []
   action:
-  - service: notify.mobile_app_thorjan11
+  - service: notify.mobile_app_thorjan
     data:
       title: Disk er snart full
       message: Disken er over 90% full
@@ -288,9 +224,17 @@
   - platform: state
     entity_id: binary_sensor.entrance_person_motion
     to: 'on'
-  condition: []
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.ha_alarm
+      state: armed_away
+    - condition: state
+      entity_id: alarm_control_panel.ha_alarm
+      state: armed_vacation
   action:
-  - service: notify.mobile_app_thorjan11
+  - service: notify.mobile_app_thorjan
     data:
       title: Noen ringer på?
       data:
@@ -304,14 +248,21 @@
   trigger:
   - type: motion
     platform: device
-    device_id: 6fa17d2fe70f87f971cecf38b068ef5f
-    entity_id: binary_sensor.garage_motion
-    domain: binary_sensor
-  - type: motion
-    platform: device
     device_id: fb507183e0ea497575340d403a063150
     entity_id: binary_sensor.garage_motion_secondary
     domain: binary_sensor
+  - type: motion
+    platform: device
+    device_id: aed8cb67435b183c956cb7da8cd87c7a
+    entity_id: binary_sensor.garage_person_motion
+    domain: binary_sensor
+    alias: Person detected by garage camera
+  - type: motion
+    platform: device
+    device_id: aed8cb67435b183c956cb7da8cd87c7a
+    entity_id: binary_sensor.garage_car_motion
+    domain: binary_sensor
+    alias: Car detected by garage camera
   condition:
   - condition: or
     conditions:
@@ -324,7 +275,10 @@
   action:
   - service: light.turn_on
     target:
-      entity_id: light.garage_ceiling
+      entity_id:
+      - light.garage_ceiling
+      - light.outdoors_lily_xl
+    data: {}
   - delay:
       hours: 0
       minutes: 5
@@ -332,7 +286,10 @@
       milliseconds: 0
   - service: light.turn_off
     target:
-      entity_id: light.garage_ceiling
+      entity_id:
+      - light.garage_ceiling
+      - light.outdoors_lily_xl
+    data: {}
   mode: restart
   trace:
     stored_traces: 30
@@ -361,27 +318,1517 @@
       entity_id: input_select.husmodus
       state: Ferie
   action:
-  - device_id: d5da54bf666d4481a501b1fca0c9f160
-    domain: mobile_app
-    type: notify
-    title: Obs!
-    message: Noen tukler med Fibaro Motions i garasjen
+  - service: notify.mobile_app_thorjan
+    data:
+      message: Noen tukler med Fibaro Motions i garasjen
   mode: restart
-- id: '1626124419045'
-  alias: House mode
-  description: Bytte av husmodus
+- id: '1627656672692'
+  alias: Notification printer done
+  description: Sends notification to Thorjan when 3d print is finished
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.octoprint_job_percentage
+    above: '99'
+  condition: []
+  action:
+  - service: notify.mobile_app_thorjan
+    data:
+      title: "3d!! \U0001F5A8"
+      message: Printen er ferdig
+      data:
+        entity_id: camera.octoprint
+  mode: single
+- id: '1627674641912'
+  alias: Notification ID lock error
+  description: Sender en notifikasjon til Thorjan dersom det er noe kluss med låsen
   trigger:
   - platform: state
+    entity_id: binary_sensor.node_49_access_control_lock_jammed
+    to: 'On'
+  - platform: state
+    entity_id: binary_sensor.node_49_home_security_tampering_product_cover_removed
+    from: Safe
+  condition: []
+  action:
+  - service: notify.mobile_app_thorjan
+    data:
+      title: Obs!
+      message: Noe kødd med ID-lock 150
+  mode: restart
+- id: '1628442236620'
+  alias: Notification Smoke detection Technical
+  description: ''
+  trigger:
+  - type: smoke
+    platform: device
+    device_id: f235dc64f75ef39f64579ea700494770
+    entity_id: binary_sensor.technical_smoke_detected
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: notify.mobile_app_thorjan
+    data:
+      title: Røykvarsel!!
+      message: Røykvarsleren på teknisk rom er utløst
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+  mode: single
+- id: '1628456111693'
+  alias: Technical Motion
+  description: Skruer på lys ved bevegelse. Av kun dersom det ikke printes.
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 1dcacb1c518e82a6baa42cb08ffcf6fc
+    entity_id: binary_sensor.technical_motion
+    domain: binary_sensor
+  - platform: state
+    entity_id: light.technical_ceiling
+    to: 'On'
+  condition: []
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.technical_ceiling
+    data: {}
+  - wait_for_trigger:
+    - type: no_motion
+      platform: device
+      device_id: 1dcacb1c518e82a6baa42cb08ffcf6fc
+      entity_id: binary_sensor.technical_motion
+      domain: binary_sensor
+      for:
+        hours: 0
+        minutes: 5
+        seconds: 0
+        milliseconds: 0
+  - condition: state
+    entity_id: binary_sensor.octoprint_printing
+    state: 'off'
+  - service: light.turn_off
+    target:
+      entity_id: light.technical_ceiling
+    data: {}
+  mode: restart
+- id: '1632047764566'
+  alias: Notification printer error
+  description: Sends notification to Thorjan on 3d printer error
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.octoprint_printing_error
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.mobile_app_thorjan
+    data:
+      title: "3d fail!! \U0001F633"
+      message: Noe er feil med printen
+      data:
+        entity_id: camera.octoprint
+  mode: single
+- id: '1632588551229'
+  alias: Hall Motion
+  description: Skruer på lys ved bevegelse i gangen
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.hall_motion_hue
+    to: 'on'
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: input_select.husmodus
+      state: Hjemme natt
+  action:
+  - choose:
+    - conditions:
+      - condition: time
+        before: 07:00
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id:
+          - light.hall_downlights_main
+        data:
+          brightness_pct: 25
+    - conditions:
+      - condition: time
+        after: 07:00
+        before: '18:50'
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id:
+          - light.hall_downlights_main
+          - light.hall_downlights_secondary
+    default:
+    - service: light.turn_on
+      target:
+        entity_id: light.hall_downlights_main
+  - service: light.turn_on
+    target:
+      entity_id:
+      - light.stairs_down_downlights
+      - light.stairs_up_downlights
+  - wait_for_trigger:
+    - platform: state
+      entity_id: binary_sensor.hall_motion_hue
+      to: 'off'
+      for:
+        hours: 0
+        minutes: 10
+        seconds: 0
+    continue_on_timeout: false
+  - service: light.turn_off
+    target:
+      entity_id: light.stairs_down_downlights
+  mode: restart
+  trace:
+    stored_traces: 50
+- id: '1632589004890'
+  alias: Low battery level detection & notification for all battery sensors
+  description: ''
+  use_blueprint:
+    path: sbyx/low-battery-level-detection-notification-for-all-battery-sensors.yaml
+    input:
+      day: 7
+      actions:
+      - service: notify.mobile_app_thorjan
+        data:
+          title: Lite batteri
+          message: Sjekk batteri på {{sensors}}
+- id: '1632638590287'
+  alias: Bathroom Motion Lights
+  description: Skruer på speil-lys ved bevegelse, alle lys av etter 30 min
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.bathroom_motion_detected_multisensor
+    to: 'on'
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: input_select.husmodus
+      state: Hjemme natt
+  - condition: time
+    before: input_datetime.marianne_bed_time
+  action:
+  - service: switch.turn_on
+    target:
+      entity_id: switch.bathroom_mirror
+  - delay:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - service: switch.turn_off
+    target:
+      entity_id: switch.bathroom_mirror
+  - service: light.turn_off
+    target:
+      area_id: 59f81a0736784116b4fa064f19e73d91
+  mode: restart
+- id: '1632945352804'
+  alias: Alarm Disarm in the morning
+  description: Skruer av skallalarm (som igjen setter hus i dagmodus)
+  trigger:
+  - platform: time
+    at: input_datetime.wakeup_marianne
+  - platform: time
+    at: input_datetime.wakeup_pia_ukedag
+  condition:
+  - condition: state
     entity_id: input_select.husmodus
+    state: Hjemme natt
+  action:
+  - service: alarm_control_panel.alarm_disarm
+    target:
+      entity_id: alarm_control_panel.ha_alarm
+    data:
+      code: '2411'
+  mode: single
+- id: '1633886440728'
+  alias: Pia Bed Lights
+  description: Rosa lys litt før leggetid, blir rød etter en stund
+  trigger:
+  - platform: time
+    at: input_datetime.pia_bed_time
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: input_select.husmodus
+      state: Ferie
+    - condition: state
+      entity_id: input_select.husmodus
+      state: Borte
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.pia_under_bed
+    data:
+      color_name: hotpink
+      brightness_pct: 60
+  - delay:
+      hours: 2
+      minutes: 0
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_on
+    target:
+      entity_id: light.pia_under_bed
+    data:
+      transition: 1200
+      color_name: red
+      brightness_pct: 20
+  mode: single
+- id: '1634328738987'
+  alias: Basement motion
+  description: Skruer på lys i kjelleren ved bevegelse og av etter 10min og ingen
+    bevegelse
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.basement_motion
+    to: 'on'
+  - platform: state
+    entity_id: automation.cinema_motion
+    to: 'on'
+  - platform: state
+    entity_id: automation.technical_motion
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.laundry_motion
+    to: 'on'
+  condition: []
+  action:
+  - service: light.turn_on
+    target:
+      entity_id:
+      - light.basement_downlights
+      - light.stairs_down_downlights
+  - wait_for_trigger:
+    - platform: state
+      entity_id: binary_sensor.cinema_motion
+      to: 'off'
+    continue_on_timeout: false
+  - wait_for_trigger:
+    - platform: state
+      entity_id: binary_sensor.basement_motion
+      to: 'off'
+    continue_on_timeout: false
+  - wait_for_trigger:
+    - platform: state
+      entity_id: binary_sensor.technical_motion
+      to: 'off'
+    continue_on_timeout: false
+  - wait_for_trigger:
+    - platform: state
+      entity_id: binary_sensor.laundry_motion
+      to: 'off'
+    continue_on_timeout: false
+  - delay:
+      hours: 0
+      minutes: 10
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_off
+    target:
+      entity_id:
+      - light.basement_downlights
+      - light.stairs_down_downlights
+      - light.closet
+  mode: restart
+- id: '1634758369031'
+  alias: TV motion
+  description: Bevegelse skrur på lys før Pia sovetid. Skrur av dersom TV er av innen
+    30 min
+  trigger:
+  - type: motion
+    platform: device
+    device_id: e1fc3076bcdf376ea925560d7182fc52
+    entity_id: binary_sensor.tv_multisensor_motion
+    domain: binary_sensor
+  condition:
+  - condition: time
+    before: input_datetime.pia_bed_time
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: input_select.husmodus
+      state: Hjemme natt
+  - condition: numeric_state
+    entity_id: sensor.tv_multisensor_illuminance
+    below: 700
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.tv_downlights
+    data: {}
+  - delay:
+      hours: 0
+      minutes: 28
+      seconds: 0
+      milliseconds: 0
+  - wait_template: '{{ is_state(''binary_sensor.bayesian_home_office'', ''off'') }}'
+    continue_on_timeout: true
+    timeout: 01:00:00
+  - wait_template: '{{ is_state(''media_player.lg_tv_remote'', ''off'') }}'
+    continue_on_timeout: true
+    timeout: 01:00:00
+  - delay:
+      hours: 0
+      minutes: 2
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_off
+    target:
+      entity_id: light.tv_downlights
+    data: {}
+  mode: restart
+- id: '1634969514191'
+  alias: Kitchen Bookshelf Lights
+  description: Barlys I helgene
+  trigger:
+  - platform: time
+    at: '20:00'
+  condition:
+  - condition: time
+    weekday:
+    - fri
+    - sat
+    - sun
+  - condition: state
+    entity_id: input_select.husmodus
+    state: Hjemme
+  - condition: state
+    entity_id: input_boolean.chili_light_bookshelf
+    state: 'off'
+  action:
+  - service: switch.turn_on
+    target:
+      entity_id: switch.bookshelf
+  mode: single
+- id: '1634969909664'
+  alias: Outdoor lights on
+  description: Skruer på utelys ved solnedgang
+  trigger:
+  - platform: sun
+    event: sunset
+  condition: []
+  action:
+  - service: light.turn_on
+    target:
+      entity_id: light.outdoors
+  mode: single
+- id: '1634969951756'
+  alias: Outdoor lights off
+  description: Skruer av utelys ved soloppgang
+  trigger:
+  - platform: sun
+    event: sunrise
+  condition: []
+  action:
+  - service: light.turn_off
+    target:
+      entity_id: light.outdoors
+  mode: single
+- id: '1634970458063'
+  alias: WC motion
+  description: Bevegelse skrur på lys
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.wc_motion
+    to: 'on'
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: input_select.husmodus
+      state: Hjemme natt
+  action:
+  - choose:
+    - conditions:
+      - condition: time
+        after: 07:00
+        before: '21:00'
+      sequence:
+      - service: light.turn_on
+        data: {}
+        target:
+          entity_id: light.wc_downlights
+    default:
+    - service: light.turn_on
+      target:
+        entity_id: light.wc_bulb
+      data:
+        brightness_pct: 20
+  - delay:
+      hours: 0
+      minutes: 10
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_off
+    target:
+      area_id: a23f63ca159c4b0789ada698b083f311
+  mode: restart
+- id: '1634971515321'
+  alias: Kitchen motion
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.kitchen_motion
+    to: 'on'
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: input_select.husmodus
+      state: Hjemme natt
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.kitchen_downlights
+  - choose:
+    - conditions:
+      - condition: numeric_state
+        entity_id: sensor.kitchen_illuminance
+        below: input_number.kitchen_illuminance_treshold_autolight_dining
+      - condition: or
+        conditions:
+        - condition: time
+          after: 06:30:00
+          before: 08:30:00
+        - condition: time
+          after: '15:00:00'
+          before: '18:00:00'
+      sequence:
+      - service: light.turn_on
+        data: {}
+        target:
+          entity_id: light.kitchen_dining_table
+    default: []
+  - delay:
+      hours: 0
+      minutes: 30
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_off
+    target:
+      entity_id:
+      - light.kitchen_downlights
+      - light.kitchen_dining_table
+    data: {}
+  mode: restart
+- id: '1636309722117'
+  alias: Pia Motion
+  description: Skruer på lys i taket til Pia
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.pia_multisensor_motion
+    to: 'on'
+  condition:
+  - condition: time
+    before: input_datetime.pia_bed_time
+  - condition: or
+    conditions:
+    - condition: time
+      after: input_datetime.wakeup_pia_ukedag
+      weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+    - condition: time
+      after: input_datetime.wakeup_pia_helg
+      weekday:
+      - sat
+      - sun
+  action:
+  - choose:
+    - conditions:
+      - condition: sun
+        before: sunrise
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.pia_ceiling
+        data:
+          brightness_pct: 30
+    - conditions:
+      - condition: sun
+        after: sunrise
+      sequence:
+      - service: light.turn_on
+        target:
+          entity_id: light.pia_ceiling
+        data:
+          brightness_pct: 100
+    default: []
+  - delay:
+      hours: 0
+      minutes: 20
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_off
+    target:
+      entity_id: light.pia_ceiling
+  mode: restart
+- id: '1638208747812'
+  alias: Weekday Tomorrow
+  description: Oppdaterer input boolean som brukes av Siri Automation
+  trigger:
+  - platform: time
+    at: 01:00
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: time
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - sun
+      sequence:
+      - service: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.weekday
+    - conditions:
+      - condition: time
+        weekday:
+        - fri
+        - sat
+      sequence:
+      - service: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.weekday
+    default: []
+  mode: single
+- id: '1639605546080'
+  alias: Cinema motion
+  description: Skrur på lys ved bevegelse. Lang tid før slukk pga så mørkt der
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      motion_entity: binary_sensor.cinema_motion
+      light_target:
+        entity_id: light.cinema_downlights
+      no_motion_wait: 3600
+- id: '1640851775035'
+  alias: Sverre Motion
+  description: Skruer på lys i taket til Sverre
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.sverre_motion
+    to: 'on'
+  condition:
+  - condition: time
+    before: input_datetime.sverre_bed_time
+  - condition: or
+    conditions:
+    - condition: time
+      after: input_datetime.wakeup_sverre_weekdays
+      weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+    - condition: time
+      after: input_datetime.wakeup_sverre_weekends
+      weekday:
+      - sat
+      - sun
+  action:
+  - choose:
+    - conditions:
+      - condition: sun
+        before: sunrise
+      sequence:
+      - service: light.turn_on
+        data:
+          brightness_pct: 8
+        target:
+          entity_id: light.sverre_ceiling
+    - conditions:
+      - condition: sun
+        after: sunrise
+      sequence:
+      - service: light.turn_on
+        data:
+          brightness_pct: 100
+        target:
+          entity_id: light.sverre_ceiling
+    default: []
+  - delay:
+      hours: 0
+      minutes: 20
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_off
+    target:
+      entity_id: light.sverre_ceiling
+  mode: restart
+- id: '1642888395027'
+  alias: Alarm Arm Night
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.ha_alarm
+    to: armed_night
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: input_select.husmodus
+      state: Hjemme natt
+  action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.husmodus
+    data:
+      option: Hjemme natt
+  mode: single
+- id: '1642888737963'
+  alias: Alarm Arm Away
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.ha_alarm
+    to: armed_away
+  condition: []
+  action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.husmodus
+    data:
+      option: Borte
+  mode: single
+- id: '1642888779447'
+  alias: Alarm Arm Vacation
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.ha_alarm
+    to: armed_vacation
+  condition: []
+  action:
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.husmodus
+    data:
+      option: Ferie
+  mode: single
+- id: '1643129116922'
+  alias: Notification VSR150 alarm
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.vsr150_alarm
+  condition:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: sensor.vsr150_alarm
+      state: '0'
+  action:
+  - service: notify.mobile_app_thorjan
+    data:
+      title: VSR150 alarm
+      message: alarmen er gått
+  mode: single
+- id: '1643467500020'
+  alias: Alarm Disarmed
+  description: Setter huset i dagmodus og skruer av sirene
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.ha_alarm
+    to: disarmed
+    from: armed_night
+    id: from night to day
+  - platform: state
+    entity_id: alarm_control_panel.ha_alarm
+    to: disarmed
+    from:
+    - armed_custom_bypass
+    - armed_home
+    - armed_away
+    - triggered
+    - pending
+    id: from other states
+  - platform: state
+    entity_id:
+    - alarm_control_panel.ha_alarm
+    from: armed_vacation
+    to: disarmed
+    id: from vacation to disarmed
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 8c66e548624776aa8848cb1f23ddf26c
+    entity_id: switch.sirene
+    domain: switch
+  - service: input_select.select_option
+    target:
+      entity_id: input_select.husmodus
+    data:
+      option: Hjemme
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: from vacation to disarmed
+        - condition: trigger
+          id: from other states
+      sequence:
+      - service: light.turn_on
+        data: {}
+        target:
+          entity_id:
+          - light.hall_downlights_secondary
+      - service: media_player.volume_set
+        data:
+          volume_level: 0.6
+        target:
+          entity_id: media_player.bad
+      - service: media_player.play_media
+        target:
+          entity_id: media_player.bad
+        data:
+          media_content_id: media-source://tts/cloud?message=Velkommen+hjem%21&language=nb-NO&gender=female
+          media_content_type: provider
+        metadata:
+          title: Velkommen hjem!
+          thumbnail: https://brands.home-assistant.io/_/cloud/logo.png
+          media_class: app
+          children_media_class:
+          navigateIds:
+          - {}
+          - media_content_type: app
+            media_content_id: media-source://tts
+          - media_content_type: provider
+            media_content_id: media-source://tts/cloud?message=Velkommen+hjem%21&language=nb-NO&gender=female
+      - service: media_player.volume_set
+        data:
+          volume_level: 0.2
+        target:
+          entity_id: media_player.bad
+    default: []
+  mode: restart
+- id: '1643469306622'
+  alias: Alarm Triggered
+  description: Det som skjer når alarmen går
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.ha_alarm
+    to: triggered
   condition: []
   action:
   - choose:
     - conditions:
       - condition: state
-        entity_id: input_select.husmodus
-        state: Hjemme natt
+        entity_id: alarm_control_panel.ha_alarm
+        state: armed_night
       sequence:
-      - service: script.good_night
-    default: []
+      - service: notify.mobile_app_thorjan
+        data:
+          title: Skallsikring!
+          message: Sjekk dørene!
+          data:
+            push:
+              sound:
+                name: default
+                critical: 1
+                volume: 1
+    default:
+    - service: notify.mobile_app_thorjan
+      data:
+        title: ALARM!
+        message: Her skulle det gått alarm, men foreløpig bare i testmodus
+        data:
+          push:
+            category: alarm
   mode: restart
-
+- id: '1643477320685'
+  alias: Notification if no motion
+  description: Gi T en actionable notifikasjon om det ikke har vært bevegelse på lenge
+  trigger:
+  - platform: state
+    entity_id: group.indoor_motion_sensors
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 20
+      seconds: 0
+  - platform: state
+    entity_id: group.indoor_motion_sensors
+    to: 'off'
+    for:
+      minutes: 40
+  - platform: state
+    entity_id: group.indoor_motion_sensors
+    to: 'off'
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+  condition:
+  - condition: state
+    entity_id: input_select.husmodus
+    state: Hjemme
+  - condition: device
+    device_id: d5da54bf666d4481a501b1fca0c9f160
+    domain: device_tracker
+    entity_id: device_tracker.thorjan
+    type: is_not_home
+  action:
+  - service: notify.mobile_app_thorjan
+    data:
+      message: Det har ikke vært bevegelse på en stund, er du ute på tur?
+      data:
+        actions:
+        - action: Arm Away
+          title: Armér alarm (borte)
+  mode: single
+- id: '1643490376412'
+  alias: iOS Action Arm Away
+  description: Armerer alarm fra iOS
+  trigger:
+  - platform: event
+    event_type: ios.action_fired
+    event_data:
+      actionName: Arm Away
+    context: {}
+  - platform: event
+    event_type: ios.notification_action_fired
+    event_data:
+      actionName: Arm Away
+  condition: []
+  action:
+  - service: alarm_control_panel.alarm_arm_away
+    target:
+      entity_id: alarm_control_panel.ha_alarm
+  mode: single
+- id: '1643493027915'
+  alias: Notification ID lock unlocking on vacation
+  description: Gir T en notifikasjon om noen åpner ID-lock på ferie. Legg til om noen
+    prøver også!
+  trigger:
+  - platform: event
+    event_type: zwave_js_notification
+    event_data:
+      node_id: 49
+      device_id: 85ec437ce5122df15217d15dbbd8b6db
+      event: 6
+    id: correct code
+  condition:
+  - condition: state
+    entity_id: input_select.husmodus
+    state: Ferie
+  action:
+  - if:
+    - condition: trigger
+      id: correct code
+    then:
+    - service: notify.mobile_app_thorjan
+      data:
+        message: ID lock ble låst opp med rett kode
+        title: ID lock
+  mode: single
+- id: '1643954963056'
+  alias: Notification remember charging
+  description: ''
+  trigger:
+  - platform: state
+    to: 'on'
+    entity_id: script.good_night
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: sensor.easee
+      state: awaiting_start
+    - condition: state
+      entity_id: sensor.easee
+      state: ready_to_charge
+  action:
+  - service: notify.mobile_app_thorjan
+    data:
+      message: Husk å lade e-up!
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 1
+  mode: single
+- id: '1648282735826'
+  alias: Outdoors Lily Midnight Off
+  description: ''
+  trigger:
+  - platform: time
+    at: 00:00:00
+  condition: []
+  action:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id:
+      - light.outdoors_lily
+      - light.outdoors_lily_xl
+  mode: single
+- id: '1649919542634'
+  alias: Alarm Pending
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.ha_alarm
+    to: Pending
+  condition: []
+  action:
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.6
+    target:
+      entity_id: media_player.bad
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.bad
+    data:
+      media_content_id: media-source://media_source/local/pending_alarm.mp3
+      media_content_type: audio/mpeg
+    metadata:
+      title: pending_alarm.mp3
+      thumbnail:
+      media_class: music
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: app
+        media_content_id: media-source://media_source
+  mode: single
+- id: '1650005499812'
+  alias: Doors opened
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.hall_door_secondary
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.hall_door
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.tv_door
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.living_room_door
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.kitchen_door
+    to: 'on'
+  condition:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.ha_alarm
+      state: armed_away
+    - condition: state
+      entity_id: alarm_control_panel.ha_alarm
+      state: armed_vacation
+    - condition: state
+      entity_id: alarm_control_panel.ha_alarm
+      state: armed_night
+  action:
+  - service: alarm_control_panel.alarm_trigger
+    data: {}
+    target:
+      entity_id: alarm_control_panel.ha_alarm
+  mode: single
+- id: '1650015305967'
+  alias: Alarm Arming
+  description: Til Away og Vacation modes
+  trigger:
+  - platform: state
+    entity_id: alarm_control_panel.ha_alarm
+    to: arming
+  condition: []
+  action:
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.8
+    target:
+      entity_id: media_player.bad
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.bad
+    data:
+      media_content_id: media-source://media_source/local/clock-ticking-2.mp3
+      media_content_type: audio/mpeg
+    metadata:
+      title: clock-ticking-2.mp3
+      thumbnail:
+      media_class: music
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: app
+        media_content_id: media-source://media_source
+  - service: media_player.volume_set
+    data:
+      volume_level: 0.2
+    target:
+      entity_id: media_player.bad
+  - service: script.turn_on
+    data: {}
+    target:
+      entity_id: script.check_doors
+  mode: single
+- id: '1651387504557'
+  alias: Pia Motion Disabled when sleeping
+  description: ''
+  trigger:
+  - platform: time
+    at: input_datetime.pia_bed_time
+    id: Pia Bed Time
+  - platform: time
+    at: '10:00:00'
+    id: At 10:00
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 33
+      command_class_name: Scene Activation
+      value: 16
+    id: Single press button
+  condition:
+  - condition: not
+    conditions:
+    - condition: time
+      after: input_datetime.pia_bed_time
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Pia Bed Time
+      sequence:
+      - service: automation.turn_off
+        data: {}
+        target:
+          entity_id: automation.pia_motion
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: At 10:00
+        - condition: trigger
+          id: Single press button
+      sequence:
+      - service: automation.turn_on
+        data: {}
+        target:
+          entity_id: automation.pia_motion
+    default: []
+  mode: single
+- id: '1651388713202'
+  alias: Sverre Motion Disabled when sleeping
+  description: ''
+  trigger:
+  - platform: time
+    at: input_datetime.sverre_bed_time
+    id: Sverre Bed Time
+  - platform: time
+    at: '10:00:00'
+    id: At 10:00
+  - platform: event
+    event_type: zwave_js_value_notification
+    event_data:
+      node_id: 34
+      command_class_name: Scene Activation
+      value: 16
+    id: Single press button
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Sverre Bed Time
+      sequence:
+      - service: automation.turn_off
+        data: {}
+        target:
+          entity_id: automation.sverre_motion
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: At 10:00
+        - condition: trigger
+          id: Single press button
+      sequence:
+      - service: automation.turn_on
+        data: {}
+        target:
+          entity_id: automation.sverre_motion
+    default: []
+  mode: single
+- id: '1657612724095'
+  alias: House mode to vacation
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.husmodus
+    to: Ferie
+  condition: []
+  action:
+  - service: script.lights_off
+    data: {}
+  - service: input_select.select_option
+    data:
+      option: Low
+    target:
+      entity_id: input_select.vtr500_fan
+  - type: turn_on
+    device_id: 8c41291faf61fdc3d71a35e6be3f05be
+    entity_id: switch.easee_cable_lock
+    domain: switch
+  - service: climate.set_preset_mode
+    data:
+      preset_mode: away
+    target:
+      entity_id:
+      - climate.bathroom
+      - climate.cinema
+      - climate.hall
+      - climate.kitchen
+      - climate.master_bedroom
+      - climate.pia
+      - climate.living_room
+      - climate.sverre
+      - climate.tv
+  mode: single
+- id: '1658596899882'
+  alias: House mode to home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.husmodus
+    to: Hjemme
+  condition: []
+  action:
+  - service: script.thermostats_not_away
+    data: {}
+  - service: input_select.select_option
+    data:
+      option: Medium
+    target:
+      entity_id: input_select.vtr500_fan
+  - type: turn_off
+    device_id: 8c41291faf61fdc3d71a35e6be3f05be
+    entity_id: switch.easee_cable_lock
+    domain: switch
+  mode: single
+- id: '1658597568899'
+  alias: House mode to (home) night
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.husmodus
+    to: Hjemme natt
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 8c41291faf61fdc3d71a35e6be3f05be
+    entity_id: switch.easee_cable_lock
+    domain: switch
+  - condition: state
+    entity_id: input_boolean.2jan_to_bed
+    state: 'off'
+  - service: script.lights_off
+    data: {}
+  mode: single
+- id: '1658597677407'
+  alias: House mode to away
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.husmodus
+    to: Borte
+  condition: []
+  action:
+  - service: script.lights_off
+    data: {}
+  - type: turn_on
+    device_id: 8c41291faf61fdc3d71a35e6be3f05be
+    entity_id: switch.easee_cable_lock
+    domain: switch
+  - service: media_player.turn_off
+    data: {}
+    target:
+      entity_id:
+      - media_player.lg_tv_remote
+      - media_player.samsung_ue65ks7005
+    alias: Turn off TV’s
+  mode: single
+- id: '1662050284166'
+  alias: deCONZ - Aqara Magic Cube MFKZQ01LM
+  description: ''
+  use_blueprint:
+    path: wmn79/deconz-xiaomi-aqara-mfkzq01lm-cube-controller.yaml
+    input:
+      remote: 0686cc33d09b33c0e8f8e120d28dd74e
+      rotate_cw:
+      - device_id: 033bb3fad7b438b9bc139d96b6856228
+        domain: light
+        entity_id: light.pia_under_bed
+        type: brightness_increase
+      rotate_ccw:
+      - device_id: 033bb3fad7b438b9bc139d96b6856228
+        domain: light
+        entity_id: light.pia_under_bed
+        type: brightness_decrease
+      wake:
+      - type: turn_on
+        device_id: 033bb3fad7b438b9bc139d96b6856228
+        entity_id: light.pia_under_bed
+        domain: light
+      double_tap:
+      - type: turn_off
+        device_id: 033bb3fad7b438b9bc139d96b6856228
+        entity_id: light.pia_under_bed
+        domain: light
+      shake:
+      - device_id: 033bb3fad7b438b9bc139d96b6856228
+        domain: light
+        entity_id: light.pia_under_bed
+        type: flash
+      slide:
+      - type: turn_on
+        device_id: 033bb3fad7b438b9bc139d96b6856228
+        entity_id: light.pia_under_bed
+        domain: light
+- id: '1663407113044'
+  alias: Master Motion
+  description: Skruer på lys i taket på soverom
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.master_motion
+    to: 'on'
+  condition:
+  - condition: time
+    after: '10:00:00'
+    before: input_datetime.sverre_bed_time
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.master_downlights
+  - delay:
+      hours: 0
+      minutes: 20
+      seconds: 0
+      milliseconds: 0
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.master_downlights
+  mode: restart
+- id: '1665397024779'
+  alias: Home Office
+  description: Turns on and off auto-lights based on bayesian probability
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.bayesian_home_office
+    to: 'on'
+    id: 'on'
+  - platform: state
+    entity_id:
+    - binary_sensor.bayesian_home_office
+    to: 'off'
+    id: 'off'
+  condition: []
+  action:
+  - if:
+    - condition: trigger
+      id: 'on'
+    then:
+    - service: automation.turn_off
+      data: {}
+      target:
+        entity_id: automation.tv_motion
+    else:
+    - service: automation.turn_on
+      data: {}
+      target:
+        entity_id: automation.tv_motion
+  mode: single
+- id: '1666094798425'
+  alias: Bathroom climate
+  description: Sets temperature based on time
+  trigger:
+  - platform: time
+    at: 04:30:00
+    id: morning
+  - platform: time
+    at: '20:00:00'
+    id: evening
+  condition:
+  - condition: state
+    entity_id: climate.bathroom
+    attribute: preset_mode
+    state: none
+  action:
+  - if:
+    - condition: trigger
+      id: morning
+    then:
+    - service: input_number.set_value
+      data:
+        value: 26
+      target:
+        entity_id: input_number.bathroom_temperature_set
+      alias: Set input_number to 26 deg
+    else:
+    - service: input_number.set_value
+      data:
+        value: 22
+      target:
+        entity_id: input_number.bathroom_temperature_set
+      alias: Set input_number to 22 deg
+  mode: single
+- id: '1666124119095'
+  alias: TV climate PriceAnalyzer
+  description: Adjusts base temperature based on price
+  use_blueprint:
+    path: erlendsellie/priceanalyzer.yaml
+    input:
+      sensor: sensor.priceanalyzer_kr_sand
+      number: input_number.tv_temperature_set_base
+      climate: climate.tv
+- id: '1666286552402'
+  alias: Notification Fe
+  description: Sends a message to T if taking meds
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.husmodus
+    to: Hjemme natt
+    id: Home
+  - platform: time
+    at: '22:45:00'
+    id: Vacation
+    enabled: false
+  condition:
+  - condition: state
+    entity_id: input_boolean.not_jern_2jan
+    state: 'on'
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Home
+      sequence:
+      - wait_for_trigger:
+        - platform: state
+          entity_id:
+          - binary_sensor.bathroom_motion_detected_multisensor
+        alias: Wait for motion in bathroom
+        continue_on_timeout: false
+    - conditions:
+      - condition: trigger
+        id: Vacation
+      sequence:
+      - condition: state
+        entity_id: input_select.husmodus
+        state: Ferie
+  - service: notify.mobile_app_thorjan
+    data:
+      message: Husk å ta jerntablett!
+      title: Husk!
+      data:
+        push:
+          sound:
+            name: default
+            critical: 1
+            volume: 0
+  mode: single
+- id: '1666288148873'
+  alias: Notification washer done
+  description: Sends a notification to M or T when the washer is done
+  trigger:
+  - platform: state
+    entity_id:
+    - sensor.washer_washer_job_state
+    to: finish
+    alias: When washer finishes
+  condition: []
+  action:
+  - if:
+    - condition: state
+      entity_id: input_boolean.not_appliances_2jan
+      state: 'on'
+    then:
+    - service: notify.mobile_app_thorjan
+      data:
+        message: Vaskemaskinen er ferdig!
+    alias: Send notification to T if wanted
+  - if:
+    - condition: state
+      entity_id: input_boolean.not_appliances_tatjana
+      state: 'on'
+    then:
+    - service: notify.mobile_app_tatjana
+      data:
+        message: Vaskemaskinen er ferdig!
+    alias: Send notification to M if wanted
+  mode: single
+- id: '1666294013890'
+  alias: Bathroom Temperature Set Saver
+  description: Manipulates the temperature set point based on price
+  use_blueprint:
+    path: erlendsellie/priceanalyzer.yaml
+    input:
+      sensor: sensor.priceanalyzer_kr_sand
+      number: input_number.bathroom_temperature_set
+      climate: climate.bathroom
+- id: '1666332421550'
+  alias: iMac lights
+  description: Turns on lights when using iMac
+  trigger:
+  - type: turned_on
+    platform: device
+    device_id: eaebb929ef4881260633d9d5ba4784da
+    entity_id: binary_sensor.imac_active
+    domain: binary_sensor
+  condition:
+  - condition: numeric_state
+    entity_id: sensor.kitchen_illuminance
+    below: 400
+  action:
+  - service: light.turn_on
+    data: {}
+    target:
+      entity_id: light.pilke_36
+  - wait_for_trigger:
+    - platform: state
+      entity_id:
+      - binary_sensor.imac_active
+      to: 'off'
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.pilke_36
+  mode: single

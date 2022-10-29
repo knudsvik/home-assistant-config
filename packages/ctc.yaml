@@ -92,7 +92,8 @@ modbus:
         unit_of_measurement: kW
         scale: .1
         precision: 1
-      - name: CTC Boiler Lower Temperature Setpoint
+      - name: CTC Boiler Lower Immersion Min Temperature
+        # Temperature when the lower immersion heater kicks in to produce DHW.
         slave: 1
         address: 61633
         scan_interval: 30
@@ -101,7 +102,8 @@ modbus:
         unit_of_measurement: °C
         scale: .1
         precision: 1
-      - name: CTC Boiler Upper Temperature Setpoint
+      - name: CTC Boiler Upper Immersion Min Temperature
+        # Temperature when the upper immersion heater kicks in to produce DHW.
         slave: 1
         address: 61634
         scan_interval: 30
@@ -110,7 +112,8 @@ modbus:
         unit_of_measurement: °C
         scale: .1
         precision: 1
-      - name: CTC Boiler Add Heat Temperature
+      - name: CTC Boiler Upper Immersion Add Heat Temperature
+        # Max temperature when reaching high temp after mixing valve time delay
         slave: 1
         address: 61635
         scan_interval: 300
@@ -259,16 +262,21 @@ modbus:
         address: 62107
         scan_interval: 300
         unique_id: 59e56c4d-3b43-4386-896f-116199a95f39
+        unit_of_measurement: %
+        scale: .1
       - name: CTC Heat Pump Brine Pump
         slave: 1
         address: 62117
         scan_interval: 300
         unique_id: 95e5a764-b963-4b00-bd9a-ac37f46756f3
+        unit_of_measurement: %
+        scale: .1
       - name: CTC Heat Pump Fan
         slave: 1
         address: 62127
         scan_interval: 300
         unique_id: de752d9a-c6d2-4ef6-9145-325e793c43e8
+        scale: .1
       - name: CTC Heat Pump Outdoor Temperature
         slave: 1
         address: 62147
@@ -312,7 +320,7 @@ modbus:
         unique_id: ec4793a6-8166-43df-98a8-5d0897c282f7
         device_class: current
         unit_of_measurement: A
-        scale: .1
+        scale: 1
         precision: .1
       - name: CTC Current L3
         slave: 1
