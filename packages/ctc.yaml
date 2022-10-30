@@ -202,13 +202,6 @@ modbus:
         unique_id: 6ed43603-8270-4407-9a51-dcbd58d4eff6
         device_class: pressure
         scale: .1
-      - name: CTC Heat Pump High Pressure
-        slave: 1
-        address: 62067
-        scan_interval: 30
-        unique_id: 7c25f6eb-ab6a-46c8-bfff-5b92f8564c83
-        device_class: pressure
-        scale: .1
       - name: CTC Heat Pump Low Pressure
         slave: 1
         address: 62077
