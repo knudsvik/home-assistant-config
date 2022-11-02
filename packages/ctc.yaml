@@ -293,6 +293,7 @@ modbus:
         scan_interval: 30
         unique_id: bb6f5fc8-00f1-4746-ac4d-df0b4d0020a9
         device_class: energy
+        state_class: total
         unit_of_measurement: kWh
         precision: 1
       - name: CTC Heating System Status
