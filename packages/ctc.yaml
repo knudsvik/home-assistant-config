@@ -319,7 +319,7 @@ modbus:
         unit_of_measurement: °C
         scale: .1
         precision: 1
-      - name: Test CTC 62274
+      - name: CTC Boiler Lower Temperature Setpoint
         slave: 1
         address: 62274
         scan_interval: 30
@@ -327,6 +327,18 @@ modbus:
         unit_of_measurement: °C
         scale: .1
         precision: 1
+    switches:
+      - name: CTC EHW 1hr
+        slave: 1
+        address: 61503
+        command_on: 2  # scale: .5
+        command_off: 0
+        #verify:
+        #  address: 61503
+        #  state_on:
+        unique_id: 3edeac68-5aa0-40a1-a2e0-fb95291fc8c5
+
+
 
 ####################
 # TEMPLATE SENSORS #
