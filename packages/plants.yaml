@@ -172,46 +172,47 @@ plant:
 # CUSTOM NAMES #
 ################
 
-customize:
-  plant.26:
-    friendly_name: Draketre (Dracaena Marginata)
-  plant.27:
-    friendly_name: Fiken (Ficus Microcarpa Nitida)
-  plant.30:
-    friendly_name: Fiken (Ficus Benjamina)
-  plant.31:
-    friendly_name: Fiken (Ficus Benjamina)
-  plant.48:
-    friendly_name: Vindmøllepalme (Trachycarpus Fortunei)
-  plant.72:
-    friendly_name: Peter P. (Capsicum Annuum)
-  plant.75:
-    friendly_name: Cherry Bomb (Capsicum Annuum)
-  plant.78:
-    friendly_name: Aji Charapita (Capsicum Chinense)
-  plant.83:
-    friendly_name: Bulgarian Carrot (Capsicum Annuum)
-  plant.105:
-    friendly_name: Arekapalme (Dypsis Lutescens)
-  plant.107:
-    friendly_name: Paraplypalme (Schefflera Arboricola)
-  plant.110:
-    friendly_name: Yuccapalme (Yucca Elephantipes)
-  plant.129:
-    friendly_name: Monstera (Monstera Deliciosa)
-  plant.165:
-    friendly_name: Arekapalme (Dypsis Lutescens)
-  plant.166:
-    friendly_name: Fiolinfiken (Ficus lyrata)
-  plant.167:
-    friendly_name: Calathea (Calathea orbifolia)
-  plant.174:
-    friendly_name: Fredslilje (Spathiphyllum Sebastiano)
-  plant.175:
-    friendly_name: Philodendron (Rojo Congo)
-  plant.185:
-    friendly_name: Praktspragle (Coleus)
-  plant.189:
-    friendly_name: Hengeeføy (Hedera Helix)
-  plant.191:
-    friendly_name: Monstera (Monstera Deliciosa)
+homeassistant:
+  customize:
+    plant.26:
+      friendly_name: Draketre (Dracaena Marginata)
+    plant.27:
+      friendly_name: Fiken (Ficus Microcarpa Nitida)
+    plant.30:
+      friendly_name: Fiken (Ficus Benjamina)
+    plant.31:
+      friendly_name: Fiken (Ficus Benjamina)
+    plant.48:
+      friendly_name: Vindmøllepalme (Trachycarpus Fortunei)
+    plant.72:
+      friendly_name: Peter P. (Capsicum Annuum)
+    plant.75:
+      friendly_name: Cherry Bomb (Capsicum Annuum)
+    plant.78:
+      friendly_name: Aji Charapita (Capsicum Chinense)
+    plant.83:
+      friendly_name: Bulgarian Carrot (Capsicum Annuum)
+    plant.105:
+      friendly_name: Arekapalme (Dypsis Lutescens)
+    plant.107:
+      friendly_name: Paraplypalme (Schefflera Arboricola)
+    plant.110:
+      friendly_name: Yuccapalme (Yucca Elephantipes)
+    plant.129:
+      friendly_name: Monstera (Monstera Deliciosa)
+    plant.165:
+      friendly_name: Arekapalme (Dypsis Lutescens)
+    plant.166:
+      friendly_name: Fiolinfiken (Ficus lyrata)
+    plant.167:
+      friendly_name: Calathea (Calathea orbifolia)
+    plant.174:
+      friendly_name: Fredslilje (Spathiphyllum Sebastiano)
+    plant.175:
+      friendly_name: Philodendron (Rojo Congo)
+    plant.185:
+      friendly_name: Praktspragle (Coleus)
+    plant.189:
+      friendly_name: Hengeeføy (Hedera Helix)
+    plant.191:
+      friendly_name: Monstera (Monstera Deliciosa)
