@@ -21,7 +21,6 @@ input_boolean: !include input_boolean.yaml
 input_datetime: !include input_datetime.yaml
 input_number: !include input_numbers.yaml
 mqtt: !include mqtt.yaml
-plant: !include plants.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 sensor: !include sensors.yaml
