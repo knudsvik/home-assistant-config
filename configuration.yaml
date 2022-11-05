@@ -45,3 +45,5 @@ calendar:
     password: !secret cal_pass
     calendars:
      - Family
+
+powercalc:

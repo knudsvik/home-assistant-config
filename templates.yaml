@@ -1,5 +1,5 @@
 - sensor:
-    - name: Lights Power
+    - name: Lights Power  # Could be improved by looking for device_class = 'power' instead
       device_class: power
       unit_of_measurement: 'W'
       unique_id: b2edd3cd-e728-4ea4-aeed-363b06972284
@@ -7,7 +7,7 @@
       state: >
         {% set ns = namespace(states=[]) %}
         {% for s in states.sensor %}
-          {% if s.object_id.startswith('light_') and s.object_id.endswith('power')%}
+          {% if s.object_id.startswith('light_') and s.object_id.endswith('power') and s.state != 'unavailable'%}
             {% set ns.states = ns.states + [ s.state | float ] %}
             {% endif %}
           {% endfor %}
