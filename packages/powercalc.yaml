@@ -1,0 +1,7 @@
+sensor:
+  - platform: powercalc
+    name: laundry water heater
+    unique_id: f6e1dfe6-7d9b-42ee-9d3a-76f9f5679b14
+    entity_id: sensor.dummy  # When source entity not available
+    fixed:  # exported data from Grafana, resampled to 1s in python using ffill
+      power: 200  # Mean power usage on 2020-06-11
