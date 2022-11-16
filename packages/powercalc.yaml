@@ -1,3 +1,6 @@
+# Home Assistant package for custom power/energy calculation of devices #
+# Based on HACS package PowerCalc #
+
 sensor:
   - platform: powercalc
     name: laundry water heater
@@ -5,3 +8,19 @@ sensor:
     entity_id: sensor.dummy  # When source entity not available
     fixed:  # exported data from Grafana, resampled to 1s in python using ffill
       power: 200  # Mean power usage on 2020-06-11
+  - platform: powercalc
+    name: light bookshelf
+    unique_id: 37c7a7de-165c-4986-8711-626905c951a5
+    entity_id: light.bookshelf
+    standby_power: 0.5 # Could be the sonoff? Check TP link without load.
+    fixed:
+      power: 10  # Mean power usage measure with TP link2 on 2022-11-16
+  - platform: powercalc
+    name: VTR500
+    unique_id: c12cbdd5-e8d8-4a48-bdb3-3d021b9c885d
+    entity_id: input_select.vtr500_fan
+    fixed:
+      states_power:
+        Low: 36.7
+        Medium: 71.5
+        High: 144.1
