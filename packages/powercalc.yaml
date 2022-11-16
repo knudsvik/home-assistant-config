@@ -32,3 +32,4 @@ sensor:
       states_power: # Includes both OctoPI and Ender3 Pro. 
         Operational: 8.14  
         Printing: 111  # avg when printing (60/210 degC). 250 - 300 W initially when warming.
+    unavailable_power: 0
