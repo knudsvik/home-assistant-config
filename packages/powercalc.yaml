@@ -29,6 +29,6 @@ sensor:
     unique_id: bf5589cf-324d-4b94-b5a3-ceca35a9712d
     entity_id: sensor.octoprint_current_state
     fixed:
-      states_power: # Includes both OctoPI and Ender3 Pro
+      states_power: # Includes both OctoPI and Ender3 Pro. 
         Operational: 8.14  
-        Printing: 111
+        Printing: 111  # avg when printing (60/210 degC). 250 - 300 W initially when warming.
