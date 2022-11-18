@@ -1,6 +1,5 @@
 # Home Assistant config files
 
-[![hacs][hacsbadge]][hacs]
 [![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
 
 A collection of some of my configuration files for my Home Assistant instance. 
