@@ -33,3 +33,9 @@ sensor:
         Operational: 8.14  
         Printing: 111  # avg when printing (60/210 degC). 250 - 300 W initially when warming.
     unavailable_power: 0
+  - platform: powercalc
+    name: fridge
+    unique_id: f6e6173b-53fd-40f8-8e3d-affc1b33bcc2
+    entity_id: sensor.dummy  # Checked with temperature but no significant changes
+    fixed:
+      power: 25  # Mean power usage measure with TPlink2 on 2022-11-16 - 2022-11-18
