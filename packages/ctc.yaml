@@ -245,7 +245,7 @@ modbus:
       - name: CTC Immersion Heater Power
         slave: 1
         address: 62168
-        scan_interval: 30
+        scan_interval: 5
         unique_id: b67b214e-28ce-41ba-80b1-6580d3197609
         device_class: power
         unit_of_measurement: kW
