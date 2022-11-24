@@ -36,6 +36,12 @@ sensor:
   - platform: powercalc
     name: fridge
     unique_id: f6e6173b-53fd-40f8-8e3d-affc1b33bcc2
-    entity_id: sensor.dummy  # Checked with temperature but no significant changes
+    entity_id: sensor.dummy  # Checked with temperature but no significant changes (jupyter)
     fixed:
       power: 25  # Mean power usage measure with TPlink2 on 2022-11-16 - 2022-11-18
+  - platform: powercalc
+    name: freezer
+    unique_id: fcf83fa4-201f-421c-a929-846c9fa763ad
+    entity_id: sensor.dummy  # Checked with temperature but no significant changes (jupyter)
+    fixed:
+      power: 37.2  # Mean power usage measure with TPlink2 on 2022-11-18 - 2022-11-24
