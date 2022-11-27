@@ -15,26 +15,31 @@ modbus:
       - name: VTR500 speed level
         slave: 1
         address: 100
+        unique_id: 5FCB9A2E-86DA-416D-AD57-9A6313BEBEA7
         scan_interval: 30
       - name: VTR500 fan speed in
         slave: 1
         address: 110
+        unique_id: 050276E3-2D7D-4509-B8CF-5B305295B055
         unit_of_measurement: rpm
         scan_interval: 30
       - name: VTR500 fan speed out
         slave: 1
         address: 111
+        unique_id: 8388DAA4-DE5E-460C-9F71-AE44E0DA875B
         unit_of_measurement: rpm
         scan_interval: 30
       - name: VTR500 temperature set point
         slave: 1
         address: 207
+        unique_id: 57EFCD35-0516-42E9-9916-25B6BE088CC0
         unit_of_measurement: °C
         device_class: temperature
         scale: 0.1
       - name: VTR500 temperature in
         slave: 1
         address: 213
+        unique_id: F7B210F8-BB49-4108-A808-3BB8E7550F8F
         unit_of_measurement: °C
         device_class: temperature
         scale: 0.1
@@ -42,6 +47,7 @@ modbus:
       - name: VTR500 temperature out
         slave: 1
         address: 214
+        unique_id: E5AC6C48-2838-46FF-93F8-913120102873
         unit_of_measurement: °C
         device_class: temperature
         scale: 0.1
@@ -49,6 +55,7 @@ modbus:
       - name: VTR500 temperature outside
         slave: 1
         address: 217
+        unique_id: 666D0A61-54F1-4189-A65E-F34AC2891D92
         unit_of_measurement: °C
         device_class: temperature
         scale: 0.1
@@ -56,19 +63,23 @@ modbus:
       - name: VTR500 rotor state
         slave: 1
         address: 350
+        unique_id: CD9CB641-B12E-468E-8D75-3982BF8480DB
         scan_interval: 30
       - name: VTR500 filter elapsed
         unit_of_measurement: days
         slave: 1
         address: 601
+        unique_id: C1EE8B0F-18D4-4F5C-8EE2-E759DE0BC193
         scan_interval: 30
       - name: VTR500 alarm
         slave: 1
         address: 800
+        unique_id: 56B07FFF-3B59-483D-A525-755FEA59A2FD
         scan_interval: 30
       - name: VTR500 alarm details
         slave: 1
         address: 802
+        unique_id: 695A51A7-60C8-44FA-8129-786456768FE8
         scan_interval: 30
 
 ###################
