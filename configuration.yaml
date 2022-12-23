@@ -4,6 +4,10 @@ homeassistant:
 # Configure a default setup of Home Assistant (frontend, api, etc)
 default_config:
 
+#logger:
+#  logs:
+#    custom_components.energyscore: debug
+
 frontend:
   themes: !include_dir_merge_named themes
 
@@ -46,3 +50,19 @@ calendar:
      - Family
 
 powercalc:
+
+###############
+### FOR DEV ###
+###############
+
+mqtt_statestream:
+  base_topic: ha-dev
+  publish_attributes: true
+  publish_timestamps: true
+  include:
+    entities:
+      - sensor.electricity_price
+      - sensor.total_energy_consumption
+      - sensor.washer_energy
+      - sensor.dishwasher_energy
+      - sensor.nordpool_price
