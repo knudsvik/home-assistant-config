@@ -12,3 +12,30 @@
             {% endif %}
           {% endfor %}
         {{ ns.states | sum | round(2) }}
+    - name: Zwater hall open actuators
+      unique_id: F6BCADA5-6D66-4D30-8794-72B4947C5839
+      icon: mdi:counter
+      state: >
+        {% set e = device_entities(device_id('switch.zwater_master')) %}
+        {{ states.switch         
+        | selectattr('state', 'equalto', 'on')         
+        | selectattr ('object_id', 'search', '^zwater')         
+        | selectattr ('entity_id', 'in', e)        
+        | list | length }}
+    - name: Zwater technical open actuators
+      unique_id: 1015D437-4603-468D-AF19-9EB9B78D3B82
+      icon: mdi:counter
+      state: >
+        {% set e = device_entities(device_id('switch.zwater_cinema')) %}
+        {{ states.switch         
+        | selectattr('state', 'equalto', 'on')         
+        | selectattr ('object_id', 'search', '^zwater')         
+        | selectattr ('entity_id', 'in', e)        
+        | list | length }}
+    - name: Zwater Energy
+      unique_id: DEC97B31-4F6B-4D58-909D-41B9EF78DE00
+      device_class: energy
+      state_class: total_increasing
+      unit_of_measurement: "kWh"
+      state: >
+       {{ states('sensor.zwater_hall_energy')| float + states('sensor.zwater_technical_energy' )| float  }}

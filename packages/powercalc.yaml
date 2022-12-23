@@ -45,3 +45,36 @@ sensor:
     entity_id: sensor.dummy  # Checked with temperature but no significant changes (jupyter)
     fixed:
       power: 37.2  # Mean power usage measure with TPlink2 on 2022-11-18 - 2022-11-24
+  - platform: powercalc
+    name: Zwater Hall
+    unique_id: 5942DFD3-52A6-4ACE-8C52-1B769FB02329
+    entity_id: sensor.zwater_hall_open_actuators
+    fixed:
+      states_power:
+        0: 0.15
+        1: 2.3
+        2: 4.3
+        3: 6.5
+        4: 8.5
+        5: 11
+        6: 8.5
+        7: 10
+        8: 10
+        9: 10
+  - platform: powercalc
+    name: Zwater Technical
+    unique_id: BDF4E764-A429-4425-AFE1-0D1C39E26A6D
+    entity_id: sensor.zwater_technical_open_actuators
+    fixed:
+      states_power:
+        0: 0.15
+        1: 2.3
+        2: 4.3
+        3: 6.5
+        4: 8.5
+        5: 11
+        6: 8.5
+        7: 10
+        8: 10
+        9: 10
+
