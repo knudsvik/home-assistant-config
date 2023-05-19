@@ -86,7 +86,7 @@ modbus:
 # MODBUS SWITCHES #
 ###################
   
-    switches: # 02.01.22: Are these needed?
+    switches: # 02.01.22: Are these needed? Not really since I am using a input_select here?
       - name: VTR500 fan speed off
         slave: 1
         address: 100
@@ -138,3 +138,4 @@ sensor:
                 '11': 'Rotor fault, conditions for rotor fault not valid anymore' } %}
             {% set state =  states.sensor.vtr500_rotor_state.state %}
             {{ mapper[state] if state in mapper else 'Unknown' }}
+

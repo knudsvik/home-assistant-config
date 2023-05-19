@@ -14,7 +14,7 @@ modbus:
       - name: CTC Hotwater Mode
         slave: 1
         address: 61500
-        scan_interval: 300
+        scan_interval: 30
         unique_id: 3c4474d4-6ac9-432a-bb15-3d98cdc27ebe
         # Translated with template sensor:
         # 0=economy 1=normal 2=comfort 3=customized
@@ -24,7 +24,7 @@ modbus:
         scan_interval: 300
         unique_id: 576d65cc-e790-4698-8cdd-7b30289bfde9
         device_class: duration
-        unit_of_measurement: hours
+        unit_of_measurement: h
         scale: .5
         precision: 1
       - name: CTC HP Blocked
@@ -59,16 +59,16 @@ modbus:
         unique_id: 3ffc4441-d8b0-45dc-9a8e-6ef4506e7bf6
         # Translated to auto/on/off with template sensor
         # 0=auto 1=on 2=off
-      - name: CTC Boiler Upper Power Max
+      - name: CTC Boiler Lower Power Max
         slave: 1
         address: 61590
-        scan_interval: 3600
+        scan_interval: 30
         unique_id: f34bcdf9-96ec-4f82-8010-6cf374f3c096
         device_class: power
         unit_of_measurement: kW
         scale: .1
         precision: 1
-      - name: CTC Boiler Lower Power Max
+      - name: CTC Boiler Upper Power Max
         slave: 1
         address: 61591
         scan_interval: 3600
@@ -337,8 +337,21 @@ modbus:
         #  address: 61503
         #  state_on:
         unique_id: 3edeac68-5aa0-40a1-a2e0-fb95291fc8c5
-
-
+      - name: CTC Hotwater Mode Economy
+        slave: 1
+        address: 61500
+        command_on: 0
+        command_off: 1  # Goes to normal
+        verify:
+        unique_id: 9372922E-8140-4A2A-935F-9BAF9B56B274
+      - name: CTC Hotwater Mode Comfort
+        slave: 1
+        address: 61500
+        command_on: 2
+        command_off: 1  # Goes to normal
+        verify:
+        unique_id: E4E9BB12-B022-4711-B7EC-1A3E03353A6C
+  
 
 ####################
 # TEMPLATE SENSORS #
