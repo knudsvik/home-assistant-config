@@ -4,25 +4,10 @@
 
 sensor:
   - platform: energyscore
-    name: Total Energy Score
-    unique_id: AC816DB0-868A-431C-92AE-CBD46Ass4DC5
-    price_entity: sensor.nordpool_price
-    energy_entity: sensor.total_energy_consumption
-  - platform: energyscore
-    name: EV Energy Score
-    unique_id: C75226D9-FE93-4BC3-A3E4-4C6685F5023B
-    price_entity: sensor.nordpool_price
-    energy_entity: sensor.easee_lifetime_energy
-  - platform: energyscore
     name: CTC Immersion Heater Energy Score
     unique_id: 5A4E0A34-0428-41D0-9534-26B759673868
     price_entity: sensor.nordpool_price
     energy_entity: sensor.ctc_immersion_heater_energy
-  - platform: energyscore
-    name: Washer Energy Score
-    unique_id: 243CDB7A-47DA-47F5-BE26-23813B7919CC
-    price_entity: sensor.nordpool_price
-    energy_entity: sensor.washer_energy
 
 ####################
 # TEMPLATE SENSORS #
@@ -46,6 +31,10 @@ sensor:
         friendly_name: Washer Energy Score Quality
         unit_of_measurement: '%'
         value_template: "{{ state_attr('sensor.washer_energy_score', 'quality') * 100 }}"
+      washer_potential_percentage:
+        friendly_name: Potential Savings Percentage
+        unit_of_measurement: '%'
+        value_template: "{{ (states('sensor.washer_potential_savings') | float / states('sensor.washer_cost') | float) | round(3) * 100 }}"
 
 utility_meter:
   total_energy_score_utility:
