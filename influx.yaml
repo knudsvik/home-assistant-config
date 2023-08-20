@@ -1,0 +1,111 @@
+api_version: 2  # 2.0
+ssl: false  # 2.0
+host: !secret local_ip
+port: 8086
+token:  !secret influx_token
+organization: !secret influx_org  # 2.0
+bucket: hassdb/autogen  # 2.0
+max_retries: 3
+default_measurement: state
+tags_attributes: friendly_name
+
+include:
+  domains:
+    - climate
+  entity_globs:
+    - automation.ctc*
+    - binary_sensor.bayesian*
+    - binary_sensor.teslen*
+    - sensor.*energy_score*
+    - sensor.bayesian*
+    - sensor.ctc*
+    - sensor.easee*
+    - sensor.plant*_conductivity
+    - sensor.plant*_light
+    - sensor.plant*_moisture
+    - sensor.plant*_temperature
+    - sensor.teslen*
+    - sensor.vsr*  # Villavent apartment
+    - sensor.vtr*  # Villavent main
+    - sensor.zwater*
+    - switch.zwater*
+    - switch.easee*
+    - switch.teslen*
+  entities:
+    - binary_sensor.house_home_day
+    - input_boolean.away
+    - input_boolean.climate_saver
+    - input_boolean.dishwasher
+    - input_boolean.torketrommel
+    - input_boolean.vaskemaskin
+    - input_select.husmodus
+    - sensor.apartment_bathroom_humidity
+    - sensor.apartment_bathroom_temperature
+    - sensor.apartment_kitchen_humidity
+    - sensor.apartment_kitchen_temperature
+    - sensor.bad_fuktighet_xiaomi
+    - sensor.bad_multisensor_humidity
+    - sensor.bathroom_multisensor_temperature
+    - sensor.bathroom_xiaomi_temperature
+    - sensor.bathroom_temperature_calc
+    - sensor.current_l1_ringnotveien_21
+    - sensor.current_l2_ringnotveien_21
+    - sensor.current_l3_ringnotveien_21
+    - sensor.dishwasher_power
+    - sensor.dishwasher_energy
+    - sensor.disk_use_percent_home
+    - sensor.electricity_price
+    - sensor.eup_battery_level
+    - sensor.eup_distance
+    - sensor.eup_odometer
+    - sensor.gang_temperatur_calc
+    - sensor.hall_temperature_hue
+    - sensor.kartell_effekt
+    - sensor.kitchen_temperature
+    - sensor.kjokken_temperatur_calc
+    - sensor.kott_motion
+    - sensor.laundry_motion
+    - sensor.laundry_power
+    - sensor.lights_power
+    - sensor.lights_energy
+    - sensor.living_room_temperature_esp32
+    - sensor.m4r_gb_received
+    - sensor.m4r_gb_sent
+    - sensor.master_bedroom_fuktighet_xiaomi
+    - sensor.master_bedroom_temperatur_xiaomi
+    - sensor.master_temperature_calc
+    - sensor.memory_use_percent
+    - sensor.pia_fuktighet_xiaomi
+    - sensor.pia_multisensor_humidity
+    - sensor.pia_multisensor_temperature
+    - sensor.pia_xiaomi_temperature
+    - sensor.pia_temperature_calc
+    - sensor.power_ringnotveien_21
+    - sensor.power_factor
+    - sensor.priceanalyzer
+    - sensor.processor_use
+    - sensor.showering_probability
+    - sensor.speedtest_download
+    - sensor.speedtest_ping
+    - sensor.speedtest_upload
+    - sensor.stue_temperatur_calc
+    - sensor.sverre_humidity_xiaomi
+    - sensor.sverre_humidity_multisensor
+    - sensor.sverre_temperature_multisensor
+    - sensor.sverre_temperature_xiaomi
+    - sensor.sverre_temperature_calc
+    - sensor.technical_motion
+    - sensor.torketrommel_effekt
+    - sensor.total_energy_consumption
+    - sensor.tplink2_consumption
+    - sensor.tv_multisensor_humidity
+    - sensor.tv_multisensor_temperature
+    - sensor.tv_stue_temperatur_calc
+    - sensor.tv_xiaomi_temperature
+    - sensor.uptime
+    - sensor.vaskemaskin_effekt
+    - sensor.voltage_phase1_ringnotveien_21
+    - sensor.voltage_phase2_ringnotveien_21
+    - sensor.voltage_phase3_ringnotveien_21
+    - sensor.wc_temperature
+    

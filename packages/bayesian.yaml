@@ -1,0 +1,116 @@
+############
+# Bayesian #
+############
+
+binary_sensor:
+  - platform: bayesian
+    name: bayesian_showering
+    unique_id: 65cb1819-a7d7-4c62-b0a7-4c5a468532a0
+    prior: 0.02
+    observations:
+      - platform: numeric_state
+        entity_id: sensor.bad_multisensor_humidity
+        above: 60
+        prob_given_true: .95 # P(humidity > 60% | showering)
+        prob_given_false: .05  # P(humidity > 60% | not showering)
+      - platform: numeric_state
+        entity_id: sensor.bad_fuktighet_xiaomi
+        above: 55
+        prob_given_true: .85 # P(humidity > 57% | showering)
+        prob_given_false: .05  # P(humidity > 57% | not showering)
+      - platform: state
+        entity_id: binary_sensor.morgen # 06:00 - 09:00
+        to_state: 'on'
+        prob_given_true: .7 # P(morgen | showering) = 3/5
+        prob_given_false: .95  # P(morgen | not showering)
+      - platform: state
+        entity_id: binary_sensor.kveldsstell # 17:00 - 19:00
+        to_state: 'on'
+        prob_given_true: .7 # P(kveldsstell | showering) = 2/5
+        prob_given_false: .99 # P(kveldstell | not showering)
+  - platform: bayesian
+    name: bayesian_house_home_day
+    unique_id: 70f7d503-f30d-4aea-bc2f-4bfa52de95f6
+    prior: 0.6
+    probability_threshold: .9
+    observations:
+      - platform: state
+        entity_id: switch.bathroom_mirror
+        to_state: 'on'
+        prob_given_true: .95 # P(mirror light on | home_day)
+        prob_given_false: .01  # P(mirror light on | not home_day)
+      - platform: state
+        entity_id: light.kitchen_downlights
+        to_state: 'on'
+        prob_given_true: .9 # P(kitchen light on | home_day)
+        prob_given_false: .1  # P(kitchen light on | not home_day)
+      - platform: state
+        entity_id: light.master_marianne
+        to_state: 'on'
+        prob_given_true: .99 # P(master led on | home_day)
+        prob_given_false: .001  # P(master led on | not home_day)
+  - platform: bayesian
+    name: bayesian_home_office
+    unique_id: b932d76f-3594-4c68-bca3-1968ae40247e
+    prior: 0.07  # x days every other week
+    probability_threshold: .9
+    observations:
+    # Prøvde Marianne hjemme også men det hjalp ikke
+      - platform: state
+        entity_id: schedule.workday
+        to_state: 'on'
+        prob_given_true: .999 # P(mon-fri 7-16 | home_office)
+        prob_given_false: .24  # P(mon-fri 7-16 | not home_office) (9t/24t på ukedager+helg)
+      - platform: template
+        value_template: >  # Bevegelse siste time
+          {% if is_state("binary_sensor.tv_multisensor_motion", None) %}
+            false
+          {% else %}
+            {{ now() - states.binary_sensor.tv_multisensor_motion.last_changed < timedelta(hours=1) }}
+          {% endif %}
+        prob_given_true: .99 # P(TV stue downlights on | home_office)
+        prob_given_false: .2  # P(TV stue downlights on | not home_office) (5h/day)
+      - platform: state
+        entity_id: input_select.husmodus
+        to_state: 'Hjemme'
+        prob_given_true: .99 # P(Hjemme | home_office)
+        prob_given_false: .2  # P(Hjemme | not home_office) (5h/day)
+      - platform: state
+        entity_id: group.adults
+        to_state: 'home'
+        prob_given_true: .99 # P(Adults home | home_office)
+        prob_given_false: .71  # P(Adults home | not home_office) (hjemme ca 14 timer til dagen)
+      - platform: state
+        entity_id: media_player.lg_tv_remote
+        to_state: 'playing'
+        prob_given_true: .001 # P(TV playing | home_office)
+        prob_given_false: .09  # P(TV playing | not home_office) (av ca 22 timer til dagen)
+  - platform: bayesian
+    #IMPROVEMENTS: Add motion stuff - add house mode stuff
+    name: bayesian_cleaning
+    unique_id: 67eb7cf3-3ca5-4098-8009-721883eeed86
+    prior: 0.009  # 3 hours every other week
+    probability_threshold: .9
+    observations:
+      - platform: state
+        entity_id: schedule.cleaning
+        to_state: 'on'
+        prob_given_true: 1 # P(tue 8-11 | cleaning)
+        prob_given_false: .5  # P(tue 8-11 | not cleaning) (Annenhver uke)
+
+#######################
+# Posterior templates #
+#######################
+
+sensor:
+  - platform: template
+    sensors:
+      bayesian_showering_posterior:
+        friendly_name: "Sannsynlighet for dusj/bad"
+        unit_of_measurement: '%'
+        icon_template: mdi:label-percent-outline
+        value_template: "{{ state_attr('binary_sensor.bayesian_showering', 'probability')|float * 100 }}"
+      bayesian_home_office_posterior:
+        friendly_name: 'Home office posterior'
+        unit_of_measurement: '%'
+        value_template: "{{ state_attr('binary_sensor.bayesian_home_office', 'probability')|float * 100 }}"

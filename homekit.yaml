@@ -1,0 +1,14 @@
+filter:
+  include_entities:
+    - input_boolean.2jan_to_bed
+    - light.kitchen_corner_downlights
+    - light.living_room_downlights
+    - light.living_room_middle_downlights
+    - light.pia_ceiling
+    - light.sverre_ceiling
+    - script.good_night
+entity_config:
+  media_player.samsung_ue65ks7005:
+    name: TV
+    feature_list:
+      - feature: on_off

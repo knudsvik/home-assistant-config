@@ -1,0 +1,14 @@
+########
+# Ping #
+########
+
+- platform: ping
+  host: !secret rpi_hassio_ip
+  name: ping_rpi_hassio
+  count: 1
+  scan_interval: 3600
+- platform: ping
+  host: !secret rpi_ip
+  name: ping_rpi
+  count: 1
+  scan_interval: 3600

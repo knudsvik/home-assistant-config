@@ -1,0 +1,73 @@
+#################
+# HISTORY STATS #
+#################
+
+sensor.washer_today:
+  friendly_name: Vaskemaskin
+  icon: mdi:washing-machine
+sensor.dryer_today:
+  friendly_name: Tørketrommel
+  icon: mdi:tumble-dryer
+sensor.living_room_tv_today:
+  friendly_name: TV oppe
+  icon: mdi:television
+sensor.tv_room_tv_today:
+  friendly_name: TV nede
+  icon: mdi:television
+
+##########
+# LIGHTS #
+##########
+
+light.2etg_downlights:
+  friendly_name: Downlights 2etg
+  icon: mdi:wall-sconce-flat
+light.kitchen_pilke36:
+  friendly_name: Pilke 36
+  icon: mdi:ceiling-light
+light.master_marianne:
+  friendly_name: Marianne under seng
+  icon: mdi:led-strip-variant
+light.master_thorjan:
+  friendly_name: Thorjan under seng
+  icon: mdi:led-strip-variant
+light.pia_under_bed:
+  friendly_name: Pia under seng
+  icon: mdi:led-strip-variant
+light.kott:
+  icon: mdi:desk-lamp
+light.wc:
+  friendly_name: WC
+  icon: mdi:wall-sconce-flat
+
+#########
+# MEDIA #
+#########
+
+media_player.samsung_ue65ks7005:
+  friendly_name: Samsung (Stue)
+media_player.lg_tv_remote:
+  friendly_name: LG (Tv stue)
+
+############
+# SWITCHES #
+############
+
+switch.bookshelf:
+  friendly_name: Bokhylle
+  icon: mdi:glass-cocktail
+switch.colour:
+  friendly_name: Fargekuler
+  icon: mdi:album
+switch.kartell:
+  icon: mdi:floor-lamp
+switch.torketrommel:
+  friendly_name: Tørketrommel
+  icon: mdi:tumble-dryer
+
+##########
+# ENERGY #
+##########
+
+sensor.lights_energy:
+  friendly_name: Lys
