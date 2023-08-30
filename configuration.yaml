@@ -19,7 +19,6 @@ alarm_control_panel: !include alarm.yaml
 automation: !include automations.yaml
 binary_sensor: !include binary_sensors.yaml
 climate: !include climate.yaml
-group: !include groups.yaml
 homekit: !include homekit.yaml
 influxdb: !include influx.yaml
 input_boolean: !include input_boolean.yaml
